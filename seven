@@ -1,0 +1,21 @@
+!wget 'http://archive.ics.uci.edu/ml/machine-learning-databases/heart-disease/processed.hungarian.data'
+import pandas as pd
+names = ['age', 'sex', 'cp', 'trestbps', 'chol', 'fbs', 'restecg', 'thalach', 'exang', 'a', 'b', 'c', 'd', 'heartdisease']
+heartDisease = pd.read_csv('processed.hungarian.data', names = names)
+del heartDisease['a']
+del heartDisease['b']
+del heartDisease['c']
+del heartDisease['d']
+del heartDisease['cp']
+heartDisease.head()
+heartDisease.columns
+from pgmpy.models import BayesianModel
+from pgmpy.estimators import MaximumLikelihoodEstimator, BayesianEstimator
+model = BayesianModel([('age', 'trestbps'), ('age', 'fbs'), ('sex', 'trestbps'), 
+                       ('exang', 'trestbps'),('trestbps','heartdisease'),('fbs','heartdisease'),
+                      ('heartdisease','restecg'),('heartdisease','thalach'),('heartdisease','chol')])
+model.fit(heartDisease, estimator = MaximumLikelihoodEstimator)
+from pgmpy.inference import VariableElimination
+HeartDisease_infer = VariableElimination(model)
+res = HeartDisease_infer.query(variables = ['heartdisease'], evidence = {'age': 28} )
+print('\n\n',res)
