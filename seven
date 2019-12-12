@@ -19,3 +19,5 @@ from pgmpy.inference import VariableElimination
 HeartDisease_infer = VariableElimination(model)
 res = HeartDisease_infer.query(variables = ['heartdisease'], evidence = {'age': 28} )
 print('\n\n',res)
+print(model.get_cpds('sex'))
+print(model.get_cpds('age'))
